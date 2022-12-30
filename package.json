@@ -25,6 +25,7 @@
     "express": "^4.18.2",
     "mongodb": "^4.13.0",
     "urlencoded-body-parser": "^3.0.0",
+    "util": "^0.12.5",
     "uuidv4": "^6.2.13"
   }
 }

@@ -10,8 +10,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(bodyParser.json());
-// get driver connection
-const dbo = require("../db/conn");
+const {mongoClient} = require("../conn");
 
 // recordRoutes is an instance of the express router.
 // We use it to define our routes.
@@ -27,8 +26,10 @@ app.all('*', function(req, res, next) {
   next();
 });
 
-app.post('/api/master', function (req, response) {
-  let db_connect = dbo.getDb();
+app.post('/api/master',async function (req, response) {
+  let db_connect = await mongoClient();
+  if (!db_connect) res.status(500).send('Systems Unavailable');
+
   var myobj =req.body
      myobj=myobj.map(obj=>({
           matchNumber: obj.matchNumber,
@@ -64,8 +65,9 @@ app.post('/api/master', function (req, response) {
   
 
 });
-app.post('/api/add', function (req, response) {
-  let db_connect = dbo.getDb();
+app.post('/api/add',async function (req, response) {
+    let db_connect = await mongoClient();
+  if (!db_connect) res.status(500).send('Systems Unavailable');
   var obj =req.body
   let myobj={
           matchNumber: obj.matchNumber,
@@ -101,8 +103,9 @@ app.post('/api/add', function (req, response) {
   
 
 });
-app.get('/api/:matchNumber',function (req, res) {
-  let db_connect = dbo.getDb();
+app.get('/api/:matchNumber',async function (req, res) {
+    let db_connect = await mongoClient();
+  if (!db_connect) res.status(500).send('Systems Unavailable');
   let myquery = { matchNumber: Number(req.params.matchNumber)};
   db_connect
   .collection("ShopMicroservice")
@@ -112,8 +115,9 @@ app.get('/api/:matchNumber',function (req, res) {
   });
 });
 
-app.get('/api',function (req, res) {
-  let db_connect = dbo.getDb("WorldCup");
+app.get('/api',async function (req, res) {
+    let db_connect = await mongoClient();
+  if (!db_connect) res.status(500).send('Systems Unavailable');
   db_connect
   .collection("ShopMicroservice")
   .find({})
@@ -122,8 +126,9 @@ app.get('/api',function (req, res) {
       res.json(result);
   });
 });
-app.post('/api/cancel/:matchNumber', function (req, response) {
-  let db_connect = dbo.getDb();
+app.post('/api/cancel/:matchNumber',async function (req, response) {
+    let db_connect = await mongoClient();
+  if (!db_connect) res.status(500).send('Systems Unavailable');
   let myquery = { matchNumber: Number(req.params.matchNumber)};
   let newvalues;
   if(Number(req.body.availability.category) ===1){
@@ -156,8 +161,9 @@ app.post('/api/cancel/:matchNumber', function (req, response) {
   });
 });
 
-app.post('/api/pending/:matchNumber',function (req, response) {
-  let db_connect = dbo.getDb();
+app.post('/api/pending/:matchNumber',async function (req, response) {
+    let db_connect = await mongoClient();
+  if (!db_connect) res.status(500).send('Systems Unavailable');
   let myquery = { matchNumber: Number(req.params.matchNumber)};
   let newvalues;
   if(Number(req.body.availability.category) ===1){
@@ -189,8 +195,9 @@ app.post('/api/pending/:matchNumber',function (req, response) {
       response.json(res);
   });
 });
-app.post('/api/reserved/:matchNumber', function (req, response) {
-  let db_connect = dbo.getDb();
+app.post('/api/reserved/:matchNumber',async function (req, response) {
+    let db_connect = await mongoClient();
+  if (!db_connect) res.status(500).send('Systems Unavailable');
   let myquery = { matchNumber: Number(req.params.matchNumber)};
   let newvalues;
   if(Number(req.body.availability.category) ===1){
@@ -225,8 +232,9 @@ app.post('/api/reserved/:matchNumber', function (req, response) {
       response.json(res);
   });
 });
-app.delete('/api/:matchNumber',  function (req, response){
-  let db_connect = dbo.getDb();
+app.delete('/api/:matchNumber',async function (req, response){
+    let db_connect = await mongoClient();
+  if (!db_connect) res.status(500).send('Systems Unavailable');
   let myquery = { matchNumber: Number(req.params.matchNumber)};
   db_connect.collection("ShopMicroservice").deleteOne(myquery, function (err, obj) {
   if (err) throw err;
@@ -236,13 +244,4 @@ app.delete('/api/:matchNumber',  function (req, response){
 });
 
 
-
-
-const port= 3000
-app.listen(port, () => {
-  // perform a database connection when server starts
-  dbo.connectToServer(function (err) {
-    if (err) console.error(err);
-  });
-  console.log(`Server is running on port: ${port}`);
-});
+app.listen(3000);
