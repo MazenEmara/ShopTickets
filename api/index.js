@@ -53,6 +53,7 @@ app.post('/api/master',async function (req, response) {
                   Pending:0
               }, 
           },
+          Matchimage:obj.Matchimage,
           homeTeam: obj.homeTeam,
           awayTeam: obj.awayTeam,
           group:obj.group,
@@ -91,6 +92,7 @@ app.post('/api/add',async function (req, response) {
                   Pending:0
               }, 
           },
+          Matchimage:obj.Matchimage,
           homeTeam: obj.homeTeam,
           awayTeam: obj.awayTeam,
           group:obj.group,
