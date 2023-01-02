@@ -12,6 +12,40 @@ app.use(express.json());
 app.use(bodyParser.json());
 const {mongoClient} = require("../conn");
 
+const rateLimit = require('express-rate-limit')
+const ipfilter = require('express-ipfilter').IpFilter
+
+
+const corsOptions = {
+  origin: '*',
+  credentials: true,            //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+}
+app.use(cors(corsOptions))
+
+
+
+const blockips = []
+
+// Create the rate limit rule
+const apiRequestLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100, // limit each IP to 2 requests per windowMs
+  standardHeaders: true,
+  handler: function (req, res, /*next*/) {
+    blockips.push(ip.getip)
+    console.log(blockips);
+    res.set('Retry-After', 50);
+    return res.status(429).json({
+      error: 'You sent too many requests. Please wait a while then try again'
+    })
+  }
+})
+
+app.use(apiRequestLimiter)
+//filter blocked ips
+app.use(ipfilter(blockips))
+
 // recordRoutes is an instance of the express router.
 // We use it to define our routes.
 // The router will be added as a middleware and will take control of requests starting with path /record.
