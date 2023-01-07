@@ -312,7 +312,7 @@ app.post('/api/reserved/:matchNumber',async function (req, response) {
     if(Number(req.body.availability.category) ===1){
         db_connect.collection("ShopMicroservice").findOne( myquery, function(error, result) {
             if (!error) {
-            if (Number(req.body.availability.quantity)> Number(result.availability.category1.Pending) && Number(result.availability.category1.count) >  (Number(req.body.availability.quantity))) {
+            if (Number(req.body.availability.quantity)> Number(result.availability.category1.Pending)) {
                 newvalues = {
                     "$inc" : { 
                         "availability.category1.count" : -req.body.availability.quantity
@@ -325,7 +325,7 @@ app.post('/api/reserved/:matchNumber',async function (req, response) {
                     response.json(res);
                     
                 });
-            } else if (Number(req.body.availability.quantity)< Number(result.availability.category1.Pending) && Number(result.availability.category1.count) >  (Number(req.body.availability.quantity))){
+            } else{
                 newvalues = {
                     "$inc" : { 
                         "availability.category1.Pending" : -req.body.availability.quantity,
@@ -340,9 +340,6 @@ app.post('/api/reserved/:matchNumber',async function (req, response) {
                     
                 });
             }
-            else{
-                console.log("Not avilable");
-            }
             } else {
             console.log("MongoDB error");
             }
@@ -351,7 +348,7 @@ app.post('/api/reserved/:matchNumber',async function (req, response) {
     else if(Number(req.body.availability.category) ===2){
         db_connect.collection("ShopMicroservice").findOne( myquery, function(error, result) {
             if (!error) {
-            if (Number(req.body.availability.quantity)> Number(result.availability.category2.Pending) && Number(result.availability.category2.count) >  (Number(req.body.availability.quantity))) {
+            if (Number(req.body.availability.quantity)> Number(result.availability.category2.Pending)) {
                 newvalues = {
                     "$inc" : { 
                         "availability.category2.count" : -req.body.availability.quantity
@@ -364,7 +361,7 @@ app.post('/api/reserved/:matchNumber',async function (req, response) {
                     response.json(res);
                     
                 });
-            } else if(Number(req.body.availability.quantity)< Number(result.availability.category2.Pending) && Number(result.availability.category2.count) >  (Number(req.body.availability.quantity))){
+            } else {
                 newvalues = {
                     "$inc" : { 
                         "availability.category2.Pending" : -req.body.availability.quantity,
@@ -379,9 +376,6 @@ app.post('/api/reserved/:matchNumber',async function (req, response) {
                     
                 });
             }
-            else{
-                console.log("Not avilable");
-            }
             } else {
             console.log("MongoDB error");
             }
@@ -390,7 +384,7 @@ app.post('/api/reserved/:matchNumber',async function (req, response) {
     else{
         db_connect.collection("ShopMicroservice").findOne( myquery, function(error, result) {
             if (!error) {
-            if (Number(req.body.availability.quantity)> Number(result.availability.category3.Pending) && Number(result.availability.category3.count) >  (Number(req.body.availability.quantity))) {
+            if (Number(req.body.availability.quantity)> Number(result.availability.category3.Pending)) {
                 newvalues = {
                     "$inc" : { 
                         "availability.category3.count" : -req.body.availability.quantity
@@ -403,7 +397,7 @@ app.post('/api/reserved/:matchNumber',async function (req, response) {
                     response.json(res);
                     
                 });
-            } else if(Number(req.body.availability.quantity)< Number(result.availability.category3.Pending) && Number(result.availability.category3.count) >  (Number(req.body.availability.quantity))){
+            } else {
                 newvalues = {
                     "$inc" : { 
                         "availability.category3.Pending" : -req.body.availability.quantity,
@@ -418,10 +412,6 @@ app.post('/api/reserved/:matchNumber',async function (req, response) {
                     
                 });
             }
-            else{
-                console.log("Not avilable");
-            }
-
             } else {
             console.log("MongoDB error");
             }
